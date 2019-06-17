@@ -16,5 +16,10 @@ namespace Bank_Sim_Win
         {
             InitializeComponent();
         }
+
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://randomiban.com/?country=Netherlands");
+        }
     }
 }

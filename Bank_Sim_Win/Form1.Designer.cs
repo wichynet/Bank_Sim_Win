@@ -49,6 +49,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txtTransferAmount = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -63,11 +64,12 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(314, 168);
+            this.tabControl1.Size = new System.Drawing.Size(336, 168);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.linkLabel1);
             this.tabPage1.Controls.Add(this.btnCreateNewAccount);
             this.tabPage1.Controls.Add(this.txtFullName);
             this.tabPage1.Controls.Add(this.label2);
@@ -76,7 +78,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(306, 142);
+            this.tabPage1.Size = new System.Drawing.Size(328, 142);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Create new account";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -251,11 +253,22 @@
             this.label6.TabIndex = 10;
             this.label6.Text = "Transfer Amount";
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(100, 120);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(208, 13);
+            this.linkLabel1.TabIndex = 5;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "For generate the new IBAN No., click here";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(338, 189);
+            this.ClientSize = new System.Drawing.Size(360, 189);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Bank Simulator";
@@ -293,6 +306,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtTransferAmount;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
 
