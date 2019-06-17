@@ -88,16 +88,17 @@
             this.btnCreateNewAccount.Location = new System.Drawing.Point(100, 76);
             this.btnCreateNewAccount.Name = "btnCreateNewAccount";
             this.btnCreateNewAccount.Size = new System.Drawing.Size(124, 23);
-            this.btnCreateNewAccount.TabIndex = 4;
+            this.btnCreateNewAccount.TabIndex = 3;
             this.btnCreateNewAccount.Text = "Create new account";
             this.btnCreateNewAccount.UseVisualStyleBackColor = true;
+            this.btnCreateNewAccount.Click += new System.EventHandler(this.BtnCreateNewAccount_Click);
             // 
             // txtFullName
             // 
             this.txtFullName.Location = new System.Drawing.Point(100, 23);
             this.txtFullName.Name = "txtFullName";
             this.txtFullName.Size = new System.Drawing.Size(139, 20);
-            this.txtFullName.TabIndex = 3;
+            this.txtFullName.TabIndex = 1;
             // 
             // label2
             // 
@@ -113,7 +114,7 @@
             this.txtCreateIbanNumber.Location = new System.Drawing.Point(100, 49);
             this.txtCreateIbanNumber.Name = "txtCreateIbanNumber";
             this.txtCreateIbanNumber.Size = new System.Drawing.Size(139, 20);
-            this.txtCreateIbanNumber.TabIndex = 1;
+            this.txtCreateIbanNumber.TabIndex = 2;
             // 
             // label1
             // 
@@ -134,7 +135,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(306, 142);
+            this.tabPage2.Size = new System.Drawing.Size(328, 142);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Deposite Money";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -147,6 +148,7 @@
             this.btnDeposite.TabIndex = 9;
             this.btnDeposite.Text = "Deposite";
             this.btnDeposite.UseVisualStyleBackColor = true;
+            this.btnDeposite.Click += new System.EventHandler(this.BtnDeposite_Click);
             // 
             // txtDepoIbanNumber
             // 
