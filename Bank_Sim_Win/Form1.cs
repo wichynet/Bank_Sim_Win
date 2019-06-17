@@ -85,7 +85,7 @@ namespace Bank_Sim_Win
 
         private void BtnDeposite_Click(object sender, EventArgs e)
         {
-            double amount;
+            double amount = 0.0;
 
             if (String.IsNullOrEmpty(txtDepoIbanNumber.Text) || String.IsNullOrEmpty(txtDepoAmount.Text))
             {
@@ -99,11 +99,50 @@ namespace Bank_Sim_Win
 
                 return;
             }
-            else if(!Double.TryParse(txtDepoIbanNumber.Text, out amount))            
+            else if(!Double.TryParse(txtDepoAmount.Text, out amount))            
             {
                 MessageBox.Show("Please enter the amount in number", "ERROR");
 
                 return;
+            }
+
+            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\wicha\source\repos\Bank_Sim_Win\Bank_Sim_Win\Bank.mdf;Integrated Security=True";
+            string cmdString = "SELECT * FROM Customer WHERE IBAN = '" + txtDepoIbanNumber.Text.Trim() + "'";
+
+            BankDataSet ds = new BankDataSet();
+            DataTable customerTable = ds.Tables["Customer"];
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                using (SqlCommand comm = new SqlCommand(cmdString, conn))
+                {
+                    try
+                    {
+                        conn.Open();
+                        customerTable.Load(comm.ExecuteReader());
+
+                        if (customerTable.Rows.Count == 0)
+                        {
+                            MessageBox.Show("Not found the existing IBAN in the records, cannot deposite", "ERROR");
+
+                            return;
+                        }
+                        else
+                        {
+                            cmdString = "UPDATE Customer SET Amount = Amount + " + amount + " WHERE IBAN = '" + txtDepoIbanNumber.Text.Trim() + "'";
+                            using (SqlCommand commUpdate = new SqlCommand(cmdString, conn))
+                            {
+                                commUpdate.ExecuteNonQuery();
+                            }                                
+
+                            MessageBox.Show("Deposite " + amount.ToString() + " to IBAN " + txtDepoIbanNumber.Text + " completely", "COMPLETED");
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show("ERROR: " + ex.Message, "ERROR");
+                    }
+                }
             }
         }
     }
