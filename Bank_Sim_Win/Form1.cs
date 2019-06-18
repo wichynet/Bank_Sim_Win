@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace Bank_Sim_Win
 {
@@ -39,8 +39,7 @@ namespace Bank_Sim_Win
                 return;
             }
 
-            //string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Bank.mdf;Integrated Security=True";
-            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\wicha\source\repos\Bank_Sim_Win\Bank_Sim_Win\Bank.mdf;Integrated Security=True";
+            string connString = ConfigurationManager.ConnectionStrings["Bank_Sim_Win"].ConnectionString;
             string cmdString = "SELECT * FROM Customer WHERE IBAN = '" + txtCreateIbanNumber.Text.Trim() + "'";
 
             BankDataSet ds = new BankDataSet();
@@ -80,7 +79,7 @@ namespace Bank_Sim_Win
                 }
             }
 
-            MessageBox.Show("Created the new account completely", "COMPLETED");
+            MessageBox.Show("Created the new account successfully", "COMPLETED");
         }
 
         private void BtnDeposite_Click(object sender, EventArgs e)
@@ -106,7 +105,7 @@ namespace Bank_Sim_Win
                 return;
             }
 
-            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\wicha\source\repos\Bank_Sim_Win\Bank_Sim_Win\Bank.mdf;Integrated Security=True";
+            string connString = ConfigurationManager.ConnectionStrings["Bank_Sim_Win"].ConnectionString;
             string cmdString = "SELECT * FROM Customer WHERE IBAN = '" + txtDepoIbanNumber.Text.Trim() + "'";
 
             BankDataSet ds = new BankDataSet();
@@ -135,7 +134,7 @@ namespace Bank_Sim_Win
                                 commUpdate.ExecuteNonQuery();
                             }                                
 
-                            MessageBox.Show("Deposite " + amount.ToString() + " to IBAN " + txtDepoIbanNumber.Text + " completely", "COMPLETED");
+                            MessageBox.Show("Deposite " + amount.ToString() + " to IBAN " + txtDepoIbanNumber.Text + " successfully", "COMPLETED");
                         }
                     }
                     catch(Exception ex)
@@ -145,5 +144,85 @@ namespace Bank_Sim_Win
                 }
             }
         }
+
+        private void BtnTransfer_Click(object sender, EventArgs e)
+        {
+            double amountToTransfer = 0.0;
+
+            if (String.IsNullOrEmpty(txtFromIbanNumber.Text) || String.IsNullOrEmpty(txtToIbanNumber.Text) || String.IsNullOrEmpty(txtTransferAmount.Text))
+            {
+                MessageBox.Show("Please enter IBAN numbers and amount to transfer", "ERROR");
+
+                return;
+            }
+            else if ((txtFromIbanNumber.Text.Trim().Length != 18) || (txtToIbanNumber.Text.Trim().Length != 18))
+            {
+                MessageBox.Show("Please enter the valid IBAN number(s)", "ERROR");
+
+                return;
+            }
+            else if (!Double.TryParse(txtTransferAmount.Text, out amountToTransfer))
+            {
+                MessageBox.Show("Please enter the amount in number", "ERROR");
+
+                return;
+            }
+            else if(txtFromIbanNumber.Text.Trim() == txtToIbanNumber.Text.Trim())
+            {
+                MessageBox.Show("Cannot transfer within the same IBAN accounts", "ERROR");
+
+                return;
+            }
+
+            string connString = ConfigurationManager.ConnectionStrings["Bank_Sim_Win"].ConnectionString;
+            string cmdString = "SELECT * FROM Customer WHERE IBAN in ('" + txtFromIbanNumber.Text.Trim() + "','" + txtToIbanNumber.Text.Trim() + "')";
+            BankDataSet ds = new BankDataSet();
+            DataTable customerTable = ds.Tables["Customer"];
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                using (SqlCommand comm = new SqlCommand(cmdString, conn))
+                {
+                    conn.Open();
+                    customerTable.Load(comm.ExecuteReader());
+
+                    if (customerTable.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Not found the existing IBAN(s) in the records, cannot deposite", "ERROR");
+
+                        return;
+                    }
+                    else
+                    {
+                        var row = customerTable.Select("IBAN = '" + txtFromIbanNumber.Text.Trim() + "'");
+                        double currentAmount = Convert.ToDouble(row[0][2]);
+
+                        if(currentAmount < amountToTransfer)
+                        {
+                            MessageBox.Show("Not enought money to transfer, the current amount is " + currentAmount.ToString(), "ERROR");
+
+                            return;
+                        }
+                        else
+                        {
+                            cmdString = "UPDATE Customer SET Amount = Amount - " + amountToTransfer + " WHERE IBAN = '" + txtFromIbanNumber.Text.Trim() + "'";
+                            using (SqlCommand commUpdate = new SqlCommand(cmdString, conn))
+                            {
+                                commUpdate.ExecuteNonQuery();
+                            }
+
+                            cmdString = "UPDATE Customer SET Amount = Amount + " + amountToTransfer + " WHERE IBAN = '" + txtToIbanNumber.Text.Trim() + "'";
+                            using (SqlCommand commUpdate = new SqlCommand(cmdString, conn))
+                            {
+                                commUpdate.ExecuteNonQuery();
+                            }
+
+                            MessageBox.Show("Transfer money amount " + amountToTransfer.ToString() + " from " + txtFromIbanNumber.Text.Trim() + 
+                                            " to " + txtToIbanNumber.Text.Trim() + " successfully", "COMPLETED");
+                        }
+                    }
+                }
+            }
+         }
     }
 }
